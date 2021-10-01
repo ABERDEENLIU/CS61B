@@ -138,7 +138,15 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
-        return false;
+        boolean result=false;
+        for (int i=0; i<4; i++) {
+            for (int j=0; j<4; j++) {
+                if (b.tile(i,j) == null) {
+                    result=true;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -148,7 +156,15 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
-        return false;
+        boolean result = false;
+        for (int i=0; i<4; i++) {
+            for (int j=0; j<4; j++) {
+                if (b.tile(i,j) != null) {
+                if (b.tile(i,j).value() == MAX_PIECE) {
+                result = true;}}
+            }
+        }
+        return result;
     }
 
     /**
@@ -159,8 +175,57 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
-        return false;
+        boolean result = false;
+        if (emptySpaceExists(b)) {
+            result = true;
+        }
+        for (int i=0; i<4; i++) {
+            for (int j=0; j<4; j++) {
+                if (b.tile(i,j) == null) {
+                    continue;
+                }
+                if (isTheSame(b, i, j)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
+
+    public static boolean isTheSame(Board b, int i, int j) {
+        boolean isTheSame = false;
+        for (int k=-1; k<=1; k++) {
+            if (k==0) {
+                continue;
+            }
+           if ((i+k>=0)&&(i+k<4)) {
+               if (b.tile(i+k,j) == null) {
+                   continue;
+               }
+                if (b.tile(i+k, j).value() == b.tile(i,j).value()) {
+                    isTheSame = true;
+                }
+            }
+        }
+
+        for (int k=-1; k<=1; k++) {
+            if (k==0) {
+                continue;
+            }
+            if ((j+k>=0)&&(j+k<4)) {
+                if (b.tile(i,j+k) == null) {
+                    continue;
+                }
+                if (b.tile(i, j+k).value() == b.tile(i,j).value()) {
+                    isTheSame = true;
+                }
+            }
+        }
+
+
+        return isTheSame;
+    }
+
 
 
     @Override
