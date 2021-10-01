@@ -111,8 +111,13 @@ public class Model extends Observable {
         changed = false;
 
         // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
+        /** need to construct a methods to move one column each time*/
+        board.setViewingPerspective(side);
+        for (int i=0; i<board.size(); i++) {
+            score = score + MovetheCol(board, i);
+        }
+        changed = true;
+        board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
         if (changed) {
@@ -120,6 +125,42 @@ public class Model extends Observable {
         }
         return changed;
     }
+
+
+    public int MovetheCol(Board b, int i) {
+        int tempScore=0;
+        int multiMoveindex=4;
+        for (int c=3; c>=0; c=c-1) {
+            int index = theClosestValue(board, i, c);
+            if (b.tile(i,c)==null) {continue;}
+            if (index>3) {
+                board.move(i, 3, board.tile(i,c));
+            } else if(b.tile(i, index).value() != b.tile(i,c).value()) {
+                board.move(i, index-1, board.tile(i,c));
+            } else if((b.tile(i, index).value() == b.tile(i,c).value()) && (multiMoveindex != index)) {
+                tempScore += b.tile(i, index).value()+b.tile(i, c).value();
+                board.move(i, index, board.tile(i,c));
+                multiMoveindex = index;
+            } else {
+                board.move(i, index-1, board.tile(i,c));}
+        }
+        return tempScore;
+    }
+
+    public int theClosestValue(Board b, int i, int c) {
+        int temp=1;
+        while (temp+c<4) {
+            if (b.tile(i, temp+c) == null) {
+                temp +=1;
+            } else {break;}
+        }
+        return temp+c;
+    }
+
+
+
+
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -191,7 +232,7 @@ public class Model extends Observable {
         }
         return result;
     }
-
+    /** compare whether the number is the same as any of 4 adjecent number, and return true if it is */
     public static boolean isTheSame(Board b, int i, int j) {
         boolean isTheSame = false;
         for (int k=-1; k<=1; k++) {
@@ -225,6 +266,8 @@ public class Model extends Observable {
 
         return isTheSame;
     }
+
+
 
 
 
