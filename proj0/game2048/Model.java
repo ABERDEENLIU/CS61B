@@ -17,6 +17,8 @@ public class Model extends Observable {
     /** True iff game is ended. */
     private boolean gameOver;
 
+    private boolean ifchanged;
+
     /* Coordinate System: column C, row R of the board (where row 0,
      * column 0 is the lower-left corner of the board) will correspond
      * to board.tile(c, r).  Be careful! It works like (x, y) coordinates.
@@ -113,10 +115,11 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         /** need to construct a methods to move one column each time*/
         board.setViewingPerspective(side);
+        ifchanged = false;
         for (int i=0; i<board.size(); i++) {
-            score = score + MovetheCol(board, i);
+            score += MovetheCol(board, i);
         }
-        changed = true;
+        changed = ifchanged;
         board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
@@ -135,14 +138,19 @@ public class Model extends Observable {
             if (b.tile(i,c)==null) {continue;}
             if (index>3) {
                 board.move(i, 3, board.tile(i,c));
+                if (index-1-c !=0) {ifchanged = true;}
             } else if(b.tile(i, index).value() != b.tile(i,c).value()) {
                 board.move(i, index-1, board.tile(i,c));
+                if (index-1-c !=0) {ifchanged = true;}
             } else if((b.tile(i, index).value() == b.tile(i,c).value()) && (multiMoveindex != index)) {
                 tempScore += b.tile(i, index).value()+b.tile(i, c).value();
                 board.move(i, index, board.tile(i,c));
+                ifchanged = true;
                 multiMoveindex = index;
             } else {
-                board.move(i, index-1, board.tile(i,c));}
+                board.move(i, index-1, board.tile(i,c));
+                if (index-1-c !=0) {ifchanged = true;}
+            }
         }
         return tempScore;
     }
