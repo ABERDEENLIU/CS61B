@@ -18,10 +18,29 @@ public class TimeAList {
     }
 
     public static void main(String[] args) {
-        timeAListConstruction();
+            timeAListConstruction();
     }
 
     public static void timeAListConstruction() {
         // TODO: YOUR CODE HERE
+        AList<Integer> Ns = new AList<>();
+        AList<Double> times = new AList<>();
+        AList<Integer> opCounts = new AList<>();
+        Stopwatch sw = new Stopwatch();
+        int tnumber = 1000;
+        while (tnumber <= 128000) {
+            AList<Integer> temp = new AList<>();
+            int ops = 0;
+            for (int i = 0; i < tnumber; i++) {
+                temp.addLast(i);
+                ops += 1;
+            }
+            int size = temp.size();
+            double t = sw.elapsedTime();
+            Ns.addLast(size);
+            opCounts.addLast(ops);
+            times.addLast(t);
+            tnumber = tnumber * 2;
+        } printTimingTable(Ns, times, opCounts);
     }
 }
