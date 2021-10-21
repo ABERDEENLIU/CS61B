@@ -1,6 +1,11 @@
 package capers;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+
+import static capers.Dog.DOG_FOLDER;
+import static capers.Dog.fromFile;
 import static capers.Utils.*;
 
 /** A repository for Capers 
@@ -18,8 +23,10 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = null; // TODO Hint: look at the `join`
-                                            //      function in Utils
+    static final File CAPERS_FOLDER = new File(".capers"); // TODO Hint: look at the `join`
+    //      function in Utils
+    static File STORY = Utils.join(".capers", "story");
+
 
     /**
      * Does required filesystem operations to allow for persistence.
@@ -30,8 +37,10 @@ public class CapersRepository {
      *    - dogs/ -- folder containing all of the persistent data for dogs
      *    - story -- file containing the current story
      */
-    public static void setupPersistence() {
-        // TODO
+    public static void setupPersistence() throws IOException {
+        CAPERS_FOLDER.mkdir();
+        Utils.join(".capers", "dogs" ).mkdir();
+        STORY.createNewFile();
     }
 
     /**
@@ -40,6 +49,10 @@ public class CapersRepository {
      * @param text String of the text to be appended to the story
      */
     public static void writeStory(String text) {
+        String current = Utils.readContentsAsString(STORY);
+        Utils.writeContents(STORY, current, text, "\n");
+        String tobeprint = Utils.readContentsAsString(STORY);
+        System.out.println(tobeprint);
         // TODO
     }
 
@@ -49,6 +62,9 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
     public static void makeDog(String name, String breed, int age) {
+        Dog a = new Dog(name, breed, age);
+        a.saveDog();
+        System.out.println(a.toString());
         // TODO
     }
 
@@ -59,6 +75,9 @@ public class CapersRepository {
      * @param name String name of the Dog whose birthday we're celebrating.
      */
     public static void celebrateBirthday(String name) {
+        Dog a = fromFile(name);
+        a.haveBirthday();
+        a.saveDog();
         // TODO
     }
 }

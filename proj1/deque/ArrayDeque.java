@@ -1,11 +1,37 @@
 package deque;
+import java.util.Iterator;
 
-public class ArrayDeque<anyT> implements Deque<anyT>{
+public class ArrayDeque<anyT> implements Deque<anyT>, Iterable<anyT>  {
     anyT[] ArrayList;
     int size;
     int theFirst;
     int theLast;
     int ALength;
+
+    public Iterator<anyT> iterator() {
+        return new ArrayDequeIterator();
+    }
+
+    public class ArrayDequeIterator implements Iterator<anyT> {
+        int currentIndext;
+
+        public ArrayDequeIterator() {
+            currentIndext = 0;
+        }
+
+        @Override
+        public boolean hasNext(){
+            return currentIndext < size;
+        }
+
+        @Override
+        public anyT next(){
+            anyT returnitem = (anyT) ArrayList[currentIndext];
+            currentIndext += 1;
+            return returnitem;
+        }
+    }
+
 
     //Firstly Implement a list without resizing, and only works for int
     public ArrayDeque() {

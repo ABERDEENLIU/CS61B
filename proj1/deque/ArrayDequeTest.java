@@ -33,6 +33,10 @@ public class ArrayDequeTest {
         System.out.println("Printing out deque: ");
         lld1.printDeque();
 
+        for (String i : lld1) {
+            System.out.println(i);
+        }
+
     }
 
 

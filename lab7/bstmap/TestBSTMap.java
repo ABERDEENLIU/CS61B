@@ -39,9 +39,13 @@ public class TestBSTMap {
     // assumes put works
     @Test
     public void sanityContainsKeyTest() {
-    	BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+   	BSTMap<String, Integer> b = new BSTMap<String, Integer>();
         assertFalse(b.containsKey("waterYouDoingHere"));
         b.put("waterYouDoingHere", 0);
+        b.put("xaterYouDoingHere", 0);
+        b.put("yaterYouDoingHere", 0);
+        b.put("aaterYouDoingHere", 0);
+        b.put("baterYouDoingHere", 0);
         assertTrue(b.containsKey("waterYouDoingHere"));
     }
 
