@@ -26,7 +26,7 @@ public class ArrayDeque<anyT> implements Deque<anyT>, Iterable<anyT>  {
 
         @Override
         public anyT next(){
-            anyT returnitem = (anyT) ArrayList[currentIndext];
+            anyT returnitem = ArrayList[currentIndext];
             currentIndext += 1;
             return returnitem;
         }

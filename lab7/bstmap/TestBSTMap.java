@@ -47,6 +47,7 @@ public class TestBSTMap {
         b.put("aaterYouDoingHere", 0);
         b.put("baterYouDoingHere", 0);
         assertTrue(b.containsKey("waterYouDoingHere"));
+        assertFalse(b.containsKey("xxterYouDoingHere"));
     }
 
     // assumes put works
