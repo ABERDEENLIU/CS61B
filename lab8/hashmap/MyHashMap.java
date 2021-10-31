@@ -1,6 +1,9 @@
 package hashmap;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -10,6 +13,8 @@ import java.util.Collection;
  *  @author YOUR NAME HERE
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
+
+
 
     /**
      * Protected helper class to store key/value pairs
@@ -27,12 +32,25 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     /* Instance Variables */
     private Collection<Node>[] buckets;
+    int N;
+    int M;
+    double MAXLoad;
     // You should probably define some more!
 
     /** Constructors */
-    public MyHashMap() { }
+    public MyHashMap() {
+        N = 0;
+        M = 16;
+        MAXLoad = 0.75;
+        buckets = new Collection[M];
+    }
 
-    public MyHashMap(int initialSize) { }
+    public MyHashMap(int initialSize) {
+        N = 0;
+        M = initialSize;
+        MAXLoad = 0.75;
+        buckets = new Collection[M];
+    }
 
     /**
      * MyHashMap constructor that creates a backing array of initialSize.
@@ -41,13 +59,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param initialSize initial size of backing array
      * @param maxLoad maximum load factor
      */
-    public MyHashMap(int initialSize, double maxLoad) { }
+    public MyHashMap(int initialSize, double maxLoad) {
+        N = 0;
+        M = initialSize;
+        buckets = new Collection[M];
+        MAXLoad = maxLoad;
+    }
 
     /**
      * Returns a new node to be placed in a hash table bucket
      */
     private Node createNode(K key, V value) {
-        return null;
+        return new Node(key, value);
     }
 
     /**
@@ -69,7 +92,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * OWN BUCKET DATA STRUCTURES WITH THE NEW OPERATOR!
      */
     protected Collection<Node> createBucket() {
-        return null;
+        return new LinkedList<>();
     }
 
     /**
@@ -87,5 +110,132 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
+
+
+
+
+    /** Removes all of the mappings from this map. */
+    @Override
+    public void clear(){
+        for (int i=0; i<M; i++){
+            buckets[i] = null;
+        }
+        N =0;
+    }
+
+    /** Returns true if this map contains a mapping for the specified key. */
+    @Override
+    public boolean containsKey(K key){
+        int index = Math.floorMod(key.hashCode(), M);
+        if (buckets[index] == null) {return false;}
+        for (Node n: buckets[index]) {
+            if (n.key.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this
+     * map contains no mapping for the key.
+     */
+    @Override
+    public V get(K key) {
+        int index = Math.floorMod(key.hashCode(), M);
+        if (buckets[index] == null) {return null;}
+        for (Node n: buckets[index]) {
+            if (n.key.equals(key)) {
+                return n.value;
+            }
+        }
+        return null;
+    }
+
+    /** Returns the number of key-value mappings in this map. */
+    @Override
+    public int size() {
+        return N;
+    }
+
+    /**
+     * Associates the specified value with the specified key in this map.
+     * If the map previously contained a mapping for the key,
+     * the old value is replaced.
+     */
+    @Override
+    public void put(K key, V value){
+        // resize first;
+        /*if (this.size() / M >= MAXLoad) {
+            resize();
+        } */
+
+        int index = Math.floorMod(key.hashCode(), M);
+
+        if (buckets[index] == null) {
+            buckets[index] = createBucket();
+        }
+
+        Node n = createNode(key, value);
+        buckets[index].add(n);
+        N += 1;
+    }
+
+    private MyHashMap resize() {
+        //1. create new hashMAP with doubled M
+        //2. for every node in original hasmap, re PUT into the new hashMAP
+        //3. return the new hashmap.
+        throw new UnsupportedOperationException();
+
+    }
+
+    /** Returns a Set view of the keys contained in this map. */
+    @Override
+    public Set<K> keySet() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Removes the mapping for the specified key from this map if present.
+     * Not required for Lab 8. If you don't implement this, throw an
+     * UnsupportedOperationException.
+     */
+    @Override
+    public V remove(K key) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Removes the entry for the specified key only if it is currently mapped to
+     * the specified value. Not required for Lab 8. If you don't implement this,
+     * throw an UnsupportedOperationException.
+     */
+    @Override
+    public V remove(K key, V value){
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        return null;
+    }
+
+
+    public static void main (String[] args) {
+        MyHashMap<Integer, String> x = new MyHashMap<>();
+        x.put(1, "chixian");
+        boolean y = x.containsKey(1);
+        boolean z = x.containsKey(2);
+        boolean j = x.containsKey(3);
+        String s = x.get(1);
+        String s2 = x.get(2);
+        System.out.println(s);
+        System.out.println(s2);
+        System.out.println(j);
+
+
+
+    }
+
 
 }

@@ -114,6 +114,15 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     public V remove(K key){
         throw new UnsupportedOperationException();
     }
+    /*  - no children case: 1. find the parent node;
+                            2. check left or right and set point to null
+        - one children case: 1. find the parent node;
+                             2. check left or right and set point to it's child
+     */
+
+
+
+
 
     @Override
     public V remove(K key, V value) {

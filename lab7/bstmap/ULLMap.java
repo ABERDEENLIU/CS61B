@@ -2,12 +2,13 @@ package bstmap;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /** A data structure that uses a linked list to store pairs of keys and values.
  *  Any key must appear at most once in the dictionary, but values may appear multiple
  *  times. Key operations are get(key), put(key, value), and contains(key) methods. The value
  *  associated to a key is the value in the last call to put with that key. */
-public class ULLMap<K, V>  implements Map61B<K, V> {
+public class ULLMap<K, V> implements Map61B<K, V> {
 
     int size = 0;
 
@@ -63,6 +64,11 @@ public class ULLMap<K, V>  implements Map61B<K, V> {
     @Override
     public Iterator<K> iterator() {
         return new ULLMapIter();
+    }
+
+    @Override
+    public void forEach(Consumer<? super K> action) {
+        Map61B.super.forEach(action);
     }
 
     /** Keys and values are stored in a linked list of Entry objects.
