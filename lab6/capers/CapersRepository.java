@@ -1,5 +1,7 @@
 package capers;
 
+// import net.sf.saxon.trans.SymbolicName;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -23,9 +25,11 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = new File(".capers"); // TODO Hint: look at the `join`
+    static final File CAPER_FOLDER = join(CWD, ".capers");
+    static final File STORY = join(CAPER_FOLDER, "story");
+     // TODO Hint: look at the `join`
     //      function in Utils
-    static File STORY = Utils.join(".capers", "story");
+
 
 
     /**
@@ -38,9 +42,10 @@ public class CapersRepository {
      *    - story -- file containing the current story
      */
     public static void setupPersistence() throws IOException {
-        CAPERS_FOLDER.mkdir();
-        Utils.join(".capers", "dogs" ).mkdir();
+        CAPER_FOLDER.mkdir();
+        Dog.DOG_FOLDER.mkdir();
         STORY.createNewFile();
+
     }
 
     /**
@@ -49,7 +54,7 @@ public class CapersRepository {
      * @param text String of the text to be appended to the story
      */
     public static void writeStory(String text) {
-        String current = Utils.readContentsAsString(STORY);
+        String current = readContentsAsString(STORY);
         Utils.writeContents(STORY, current, text, "\n");
         String tobeprint = Utils.readContentsAsString(STORY);
         System.out.println(tobeprint);
@@ -63,8 +68,8 @@ public class CapersRepository {
      */
     public static void makeDog(String name, String breed, int age) {
         Dog a = new Dog(name, breed, age);
-        a.saveDog();
         System.out.println(a.toString());
+        a.saveDog();
         // TODO
     }
 

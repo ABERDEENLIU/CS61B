@@ -1,9 +1,8 @@
 package hashmap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -163,12 +162,13 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * If the map previously contained a mapping for the key,
      * the old value is replaced.
      */
+
     @Override
     public void put(K key, V value){
-        // resize first;
-        /*if (this.size() / M >= MAXLoad) {
-            resize();
-        } */
+
+        if (this.size() / M >= MAXLoad) {
+            resize(M*2);
+        }
 
         int index = Math.floorMod(key.hashCode(), M);
 
@@ -176,23 +176,52 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             buckets[index] = createBucket();
         }
 
+        if (containsKey(key)) {
+            for (Node n: buckets[index]) {
+                if (n.key.equals(key)) {
+                    n.value = value;
+                }
+            }
+
+        } else {
         Node n = createNode(key, value);
         buckets[index].add(n);
         N += 1;
+        }
     }
 
-    private MyHashMap resize() {
-        //1. create new hashMAP with doubled M
-        //2. for every node in original hasmap, re PUT into the new hashMAP
-        //3. return the new hashmap.
-        throw new UnsupportedOperationException();
-
+    private void resize(int capacity) {
+        int m = this.M;
+        Collection<Node>[] temp = new Collection[capacity];
+        for (int i=0; i< m; i++) {
+            if (buckets[i] != null) {
+                for (Node n : buckets[i]) {
+                    if (n != null) {
+                        int index = Math.floorMod(n.key.hashCode(), capacity);
+                        if (temp[index] == null) {
+                            temp[index] = createBucket();
+                        }
+                        temp[index].add(n);
+                    }
+                }
+            }
+        }
+        buckets = temp;
+        M = capacity;
     }
 
     /** Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> allkey = new HashSet<>();
+        for (int i=0; i<M; i++) {
+            if (buckets[i] != null) {
+                for (Node n: buckets[i]) {
+                    allkey.add(n.key);
+                }
+            }
+        }
+        return allkey;
     }
 
     /**
@@ -217,13 +246,37 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return new MyHashMapIterator();
+    }
+
+    private class MyHashMapIterator implements Iterator<K> {
+        int wiz;
+        Set<K> allkeys = new HashSet<>();
+
+
+        public MyHashMapIterator() {
+            wiz = 0;
+            allkeys = keySet();
+        }
+
+        public boolean hasNext() {
+            return wiz < M;
+        }
+        public K next() {
+            Iterator<K> allkeysiterator = allkeys.iterator();
+            wiz += 1;
+            return allkeysiterator.next();
+
+        }
+
     }
 
 
     public static void main (String[] args) {
-        MyHashMap<Integer, String> x = new MyHashMap<>();
+        MyHashMap<Integer, String> x = new MyHashMap<>(2);
         x.put(1, "chixian");
+        x.put(2, "zhuoran");
+        x.put(3, "bitcoin");
         boolean y = x.containsKey(1);
         boolean z = x.containsKey(2);
         boolean j = x.containsKey(3);
@@ -232,6 +285,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         System.out.println(s);
         System.out.println(s2);
         System.out.println(j);
+        for (Integer k: x.keySet()) {
+            System.out.println(k);
+        }
 
 
 

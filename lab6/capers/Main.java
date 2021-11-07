@@ -54,14 +54,16 @@ public class Main {
             break;
         case "dog":
             validateNumArgs("dog", args, 4);
-            // TODO: make a dog
             CapersRepository.makeDog(args[1], args[2], Integer.parseInt(args[3]));
             break;
+            // TODO: make a dog
         case "birthday":
             validateNumArgs("birthday", args, 2);
             CapersRepository.celebrateBirthday(args[1]);
-            // TODO: celebrate this dog's birthday
             break;
+            // TODO: celebrate this dog's birthday
+
+
         default:
             exitWithError(String.format("Unknown command: %s", args[0]));
         }
