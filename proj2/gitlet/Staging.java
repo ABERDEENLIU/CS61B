@@ -67,7 +67,7 @@ public class Staging implements Serializable{
     }
 
     public void clearStaging() {
-        fileList = null;
+        fileList.clear();
     }
 
     public void printallkeys() {

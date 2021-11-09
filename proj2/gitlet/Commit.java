@@ -51,7 +51,9 @@ public class Commit implements Serializable {
         this.message = "initial commit";
         Calendar cal = Calendar.getInstance();
         cal.set(1970, 1, 1, 0, 0, 0);
-        this.date = cal.getTime().toString();
+        DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z");
+        this.date = df.format(cal.getTime());
+      //  this.date = cal.getTime().toString();
  //       DateFormat df = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
  //       this.date = df.format(new Date());
         this.hashname = sha1(this.message, this.date);
@@ -75,8 +77,15 @@ public class Commit implements Serializable {
 
         this.message = message;
         this.parentID = current.hashname;
+
+
         Calendar cal = Calendar.getInstance();
-        this.date = cal.getTime().toString();
+        DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z");
+        // "EEE, d MMM yyyy HH:mm:ss Z"
+        // Wed, 4 Jul 2001 12:08:56 -0700
+        // Thu Nov 9 20:00:05 2017 -0800
+        this.date = df.format(cal.getTime());
+       // this.date = cal.getTime().toString();
         this.filelist = status;
         for (String i: status.fileList.keySet()) {
             filelistname += i;
@@ -95,6 +104,10 @@ public class Commit implements Serializable {
         return this.date;
     }
 
+    public Staging getFileList() {
+        return this.filelist;
+    }
+
     public String getHashname() {
         return this.hashname;
     }
@@ -107,7 +120,13 @@ public class Commit implements Serializable {
         System.out.println("===");
         System.out.println("commit " + hashname);
         System.out.println("Date: " + date);
-        System.out.println(message);
-        System.out.println("\n");
+        System.out.println(message + "\n");
     }
+
+    public static Commit fromCommitHash(String hashcode) {
+        File inFile = join(COMMITS, hashcode);
+        Commit temp = readObject(inFile, Commit.class);
+        return temp;
+    }
+
 }

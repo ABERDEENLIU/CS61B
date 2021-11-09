@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import static gitlet.HEAD.fromHead;
 import static gitlet.Utils.*;
 import static gitlet.Staging.*;
+import static gitlet.Commit.*;
 
 // TODO: any imports you need here
 
@@ -70,22 +72,31 @@ public class Repository {
             status.saveFile();
             writeContents(join(BLOBS, hashcode), content);
 
-            status.printallkeys();
         }
     }
 
     public static void commitFile(String name) {
-        Staging status = fromFile("status");
 
-        if (status.noCommit()) {
+        File inFile = join(STAGING_AREA, "status");
+        if (!inFile.exists()) {
             System.out.println("No changes added to the commit.");
-        }
+        } else {
 
-        Commit currentCommit = new Commit(name);
-        HEAD head = new HEAD(currentCommit);
-        head.saveHead();
-        currentCommit.saveCommit();
-        status.clearStaging();
+            Staging status = fromFile("status");
+
+            if (status.noCommit()) {
+                System.out.println("No changes added to the commit.");
+            }
+
+            Commit currentCommit = new Commit(name);
+            HEAD head = new HEAD(currentCommit);
+            BRANCH Master = new BRANCH(currentCommit);
+            head.saveHead();
+            Master.saveBranch();
+            currentCommit.saveCommit();
+            status.clearStaging();
+            status.saveFile();
+        }
     }
 
     public static void logDisplay() {
@@ -99,14 +110,61 @@ public class Repository {
             Commit next = readObject(inFile, Commit.class);
             current.printINFO();
             current = next;
-
         }
-
         current.printINFO();
     }
 
+    public static void checkoutFile(String name) {
+        HEAD head = fromHead("head");
+        Commit current = head.CurrentCommit;
+        Staging status = current.getFileList();
+        TreeMap<String, String> commitfilelist = status.fileList;
 
+        for (String filename: commitfilelist.keySet()) {
+            if (filename.equals(name)) {
+                restrictedDelete(name);
+                File commitfile = join(BLOBS, commitfilelist.get(name));
+                String content = readContentsAsString(commitfile);
+                File writefile = join(CWD, name);
+                writeContents(writefile, content);
+            } else {
+                System.out.println("File does not exist in that commit.");
+            }
+        }
     }
+
+    public static void checkoutCommit(String commithashname, String name) {
+
+        if (!checkCommitExit(commithashname)) {
+            System.out.println("No commit with that id exists.");
+        }
+
+        Commit current = fromCommitHash(commithashname);
+        Staging status = current.getFileList();
+        TreeMap<String, String> commitfilelist = status.fileList;
+
+        for (String filename : commitfilelist.keySet()) {
+            if (filename.equals(name)) {
+                restrictedDelete(name);
+                File commitfile = join(BLOBS, commitfilelist.get(name));
+                String content = readContentsAsString(commitfile);
+                File writefile = join(CWD, name);
+                writeContents(writefile, content);
+            } else {
+                System.out.println("File does not exist in that commit.");
+            }
+
+        }
+    }
+
+    public static boolean checkCommitExit(String commithashname) {
+        File commitfile = join(COMMITS, commithashname);
+        return commitfile.exists();
+    }
+
+
+
+}
 
 
 

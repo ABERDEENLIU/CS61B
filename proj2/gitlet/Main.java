@@ -40,9 +40,9 @@ public class Main {
             case "commit":
                 if (args.length == 1) {
                     System.out.println("Please enter a commit message.");
-                }
+                } else {
                 validateNumArgs("commit", args, 2);
-                Repository.commitFile(args[1]);
+                Repository.commitFile(args[1]);}
                 // TODO: saves a snaopshot of tracked filed in the curent commit
                 break;
             case "rm":
@@ -64,7 +64,13 @@ public class Main {
                 break;
 
 
- /*         case "checkout":
+            case "checkout":
+                if (args.length == 3) {
+                validateNumArgs("checkout", args, 3);
+                Repository.checkoutFile(args[2]);}
+                if (args.length == 4) {
+                    validateNumArgs("checkout", args, 4);
+                    Repository.checkoutCommit(args[1], args[3]);}
                 // TODO:
                 break;
             case "branch":
@@ -80,7 +86,7 @@ public class Main {
                 // TODO:
                 break;
 
- */
+
 
             default:
                 System.out.println("No command with that name exists.");
