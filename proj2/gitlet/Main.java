@@ -29,21 +29,17 @@ public class Main {
             case "init":
                 validateNumArgs("init", args, 1);
                 Repository.setupPersistence();
-                // TODO: handle the `init` command
                 break;
             case "add":
                 validateNumArgs("add", args, 2);
                 Repository.stagingFile(args[1]);
-                // TODO: handle the `add [filename]` command
                 break;
-            // TODO: FILL THE REST IN
             case "commit":
                 if (args.length == 1) {
                     System.out.println("Please enter a commit message.");
                 } else {
                 validateNumArgs("commit", args, 2);
                 Repository.commitFile(args[1]);}
-                // TODO: saves a snaopshot of tracked filed in the curent commit
                 break;
             case "rm":
                 // TODO: unstaged the file if it's currently staged
@@ -51,13 +47,14 @@ public class Main {
             case "log":
                 validateNumArgs("log", args, 1);
                 Repository.logDisplay();
-                // TODO: display information about each commit till the initial commit.
                 break;
             case "global-log":
-                // TODO: display every commit ever made (different branches)
+                validateNumArgs("global-log", args, 1);
+                Repository.globlelogDisplay();
                 break;
             case "find" :
-                // TODO: print our IDs of all commits with message
+                validateNumArgs("find", args, 2);
+                Repository.findcommitmessage(args[1]);
                 break;
             case "status":
                 // TODO: Display what branckes currently exist, and marks the current with *

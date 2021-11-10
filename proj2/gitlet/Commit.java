@@ -6,10 +6,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date; // TODO: You'll likely use this in this class
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 import static gitlet.Repository.*;
 import static gitlet.HEAD.*;
 
@@ -56,6 +54,7 @@ public class Commit implements Serializable {
       //  this.date = cal.getTime().toString();
  //       DateFormat df = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
  //       this.date = df.format(new Date());
+        this.filelist = new Staging();
         this.hashname = sha1(this.message, this.date);
     }
 
@@ -69,11 +68,16 @@ public class Commit implements Serializable {
     //private Staging filelist;
     public Commit(String message) {
 
-        Staging status = fromFile("status");
+        Staging added = fromFile("status");
         HEAD head = fromHead("head");
         Commit current = head.CurrentCommit;
+        Staging parentfilelist = current.getFileList();
         String filelistname = "";
         String filelisthascode = "";
+
+        // Update the filelist been tracked by adding the current staging status to the parent commit file list
+        TreeMap<String, String> addedfilelist = added.fileList;
+        parentfilelist.updateList(addedfilelist);
 
         this.message = message;
         this.parentID = current.hashname;
@@ -86,10 +90,10 @@ public class Commit implements Serializable {
         // Thu Nov 9 20:00:05 2017 -0800
         this.date = df.format(cal.getTime());
        // this.date = cal.getTime().toString();
-        this.filelist = status;
-        for (String i: status.fileList.keySet()) {
+        this.filelist = parentfilelist;
+        for (String i: parentfilelist.fileList.keySet()) {
             filelistname += i;
-            filelisthascode += status.fileList.get(i);
+            filelisthascode += parentfilelist.fileList.get(i);
         }
         this.hashname = sha1(this.message, this.parentID, this.date, filelistname, filelisthascode);
     }
@@ -114,6 +118,10 @@ public class Commit implements Serializable {
 
     public String getParentID() {
         return this.parentID;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 
     public void printINFO() {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 
 import static gitlet.HEAD.fromHead;
@@ -114,6 +115,33 @@ public class Repository {
         current.printINFO();
     }
 
+    public static void globlelogDisplay() {
+
+        List<String> commitlist = plainFilenamesIn(COMMITS);
+
+        for (String commithash : commitlist) {
+            Commit commit = fromCommitHash(commithash);
+            commit.printINFO();
+        }
+    }
+
+    public static void findcommitmessage(String message) {
+
+        List<String> commitlist = plainFilenamesIn(COMMITS);
+
+        boolean found = false;
+        for (String commithash : commitlist) {
+            Commit commit = fromCommitHash(commithash);
+            if (commit.getMessage().equals(message)) {
+                System.out.println(commithash);
+                found = true;
+            }
+        }
+        if (! found) {
+            System.out.println("ound no commit with that message.");
+        }
+    }
+
     public static void checkoutFile(String name) {
         HEAD head = fromHead("head");
         Commit current = head.CurrentCommit;
@@ -143,17 +171,14 @@ public class Repository {
         Staging status = current.getFileList();
         TreeMap<String, String> commitfilelist = status.fileList;
 
-        for (String filename : commitfilelist.keySet()) {
-            if (filename.equals(name)) {
-                restrictedDelete(name);
-                File commitfile = join(BLOBS, commitfilelist.get(name));
-                String content = readContentsAsString(commitfile);
-                File writefile = join(CWD, name);
-                writeContents(writefile, content);
-            } else {
-                System.out.println("File does not exist in that commit.");
-            }
-
+        if (commitfilelist.containsKey(name)) {
+            restrictedDelete(name);
+            File commitfile = join(BLOBS, commitfilelist.get(name));
+            String content = readContentsAsString(commitfile);
+            File writefile = join(CWD, name);
+            writeContents(writefile, content);
+        } else {
+            System.out.println("File does not exist in that commit.");
         }
     }
 

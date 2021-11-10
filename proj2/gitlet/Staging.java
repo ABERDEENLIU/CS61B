@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.TreeMap;
-
 import static gitlet.Repository.*;
-
 import static gitlet.Utils.*;
+
 
 public class Staging implements Serializable{
 
@@ -47,6 +46,12 @@ public class Staging implements Serializable{
 
     public void updateFile(String name, String hashcode) {
             fileList.put(name, hashcode);
+    }
+
+    public void updateList(TreeMap<String, String> added) {
+        for (String key: added.keySet()) {
+            fileList.put(key, added.get(key));
+        }
     }
 
     public void saveFile() {

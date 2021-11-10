@@ -17,13 +17,13 @@ public class BRANCH implements Serializable{
     }
 
     public static BRANCH fromBranch(String name) {
-        File inFile = join(COMMITS, name);
+        File inFile = join(STAGING_AREA, name);
         BRANCH temp = readObject(inFile, BRANCH.class);
         return temp;
     }
 
     public void saveBranch() {
-        File outfile = join(COMMITS, "branch");
+        File outfile = join(STAGING_AREA, "branch");
         writeObject(outfile, this);
     }
 

@@ -17,13 +17,13 @@ public class HEAD implements Serializable{
     }
 
     public static HEAD fromHead(String name) {
-        File inFile = join(COMMITS, name);
+        File inFile = join(STAGING_AREA, name);
         HEAD temp = readObject(inFile, HEAD.class);
         return temp;
     }
 
     public void saveHead() {
-        File outfile = join(COMMITS, "head");
+        File outfile = join(STAGING_AREA, "head");
         writeObject(outfile, this);
     }
 
