@@ -59,8 +59,6 @@ public class Main {
             case "status":
                 // TODO: Display what branckes currently exist, and marks the current with *
                 break;
-
-
             case "checkout":
                 if (args.length == 3) {
                 validateNumArgs("checkout", args, 3);
